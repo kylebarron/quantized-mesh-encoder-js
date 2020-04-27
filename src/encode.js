@@ -1,4 +1,12 @@
-function encodeHeader(data) {
+/**
+ * Encode header data
+ *
+ * @param  {DataView} view   DataView to fill
+ * @param  {Object} data   Object with data to encode
+ * @param  {Number} offset Offset in DataView
+ * @return {[type]}        [description]
+ */
+function encodeHeader(view, data, offset) {
   var {
     // The center of the tile in Earth-centered Fixed coordinates.
     // doubles
@@ -31,24 +39,24 @@ function encodeHeader(data) {
     horizonOcclusionPointZ,
   } = data;
 
-  // 88 bytes for the header
-  var buffer = new ArrayBuffer(88);
-  var view = new DataView(buffer);
+  view.setFloat64(offset + 0, centerX, true);
+  view.setFloat64(offset + 8, centerY, true);
+  view.setFloat64(offset + 16, centerZ, true);
 
-  centerY = 23.24
-  view.setFloat64(0, centerX, true);
-  view.setFloat64(8, centerY, true);
-  view.setFloat64(16, centerZ, true);
+  view.setFloat64(offset + 24, minimumHeight, true);
+  view.setFloat64(offset + 28, maximumHeight, true);
 
-  view.setFloat64(24, minimumHeight, true);
-  view.setFloat64(28, maximumHeight, true);
+  view.setFloat64(offset + 32, boundingSphereCenterX, true);
+  view.setFloat64(offset + 40, boundingSphereCenterY, true);
+  view.setFloat64(offset + 48, boundingSphereCenterZ, true);
+  view.setFloat64(offset + 56, boundingSphereRadius, true);
 
-  view.setFloat64(32, boundingSphereCenterX, true);
-  view.setFloat64(40, boundingSphereCenterY, true);
-  view.setFloat64(48, boundingSphereCenterZ, true);
-  view.setFloat64(56, boundingSphereRadius, true);
+  view.setFloat64(offset + 64, horizonOcclusionPointX, true);
+  view.setFloat64(offset + 72, horizonOcclusionPointY, true);
+  view.setFloat64(offset + 80, horizonOcclusionPointZ, true);
 
-  view.setFloat64(64, horizonOcclusionPointX, true);
-  view.setFloat64(72, horizonOcclusionPointY, true);
-  view.setFloat64(80, horizonOcclusionPointZ, true);
+  // New offset
+  return offset + 88;
+}
+
 }
