@@ -1,0 +1,31 @@
+{
+  "name": "quantized-mesh-encoder",
+  "version": "1.0.0",
+  "description": "Encode a mesh into the quantized mesh format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylebarron/quantized-mesh-encoder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kylebarron/quantized-mesh-encoder/issues"
+  },
+  "homepage": "https://github.com/kylebarron/quantized-mesh-encoder#readme",
+  "devDependencies": {
+    "@mapbox/martini": "^0.2.0",
+    "loaders.gl": "^0.3.5",
+    "node-fetch": "^2.6.0"
+  },
+  "dependencies": {
+    "@loaders.gl/core": "^2.1.2",
+    "@loaders.gl/images": "^2.1.2",
+    "@loaders.gl/polyfills": "^2.1.2",
+    "@loaders.gl/terrain": "^2.1.2"
+  }
+}
