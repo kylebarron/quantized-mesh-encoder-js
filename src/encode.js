@@ -1,4 +1,18 @@
 /**
+ * Encode zig zag
+ *
+ * @param  {Integer} value Value to encode
+ * @return {Integer}       Encoded value
+ */
+function encodeZigZag(value) {
+  if (value >= 0) {
+    return value << 1
+  }
+
+  return ((value * -1) << 1) - 1;
+}
+
+/**
  * Encode header data
  *
  * @param  {DataView} view   DataView to fill
