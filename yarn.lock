@@ -9,6 +9,11 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@here/quantized-mesh-decoder@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@here/quantized-mesh-decoder/-/quantized-mesh-decoder-1.1.3.tgz#0e47f87628434f267281eb1c36e62d3e52f8994b"
+  integrity sha512-a0O+erOOTWsCvFKEmUHaDt+f24BoGFXAw9gifXn275QJTKr+1LMUza6oWQNCJ/HU2oQ197ysPtbSGvFv3AYl2w==
+
 "@loaders.gl/core@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@loaders.gl/core/-/core-2.1.2.tgz#2a4ff61e138bd911ff6586fa47ffffb25d0867aa"
