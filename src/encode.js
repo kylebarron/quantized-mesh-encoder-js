@@ -6,7 +6,7 @@
  */
 function encodeZigZag(value) {
   if (value >= 0) {
-    return value << 1
+    return value << 1;
   }
 
   return ((value * -1) << 1) - 1;
@@ -50,7 +50,7 @@ function encodeHeader(view, data, offset) {
     // See http://cesiumjs.org/2013/04/25/Horizon-culling/ for more information.
     horizonOcclusionPointX,
     horizonOcclusionPointY,
-    horizonOcclusionPointZ,
+    horizonOcclusionPointZ
   } = data;
 
   view.setFloat64(offset + 0, centerX, true);
@@ -73,4 +73,5 @@ function encodeHeader(view, data, offset) {
   return offset + 88;
 }
 
-}
+export const TEST_EXPORTS = { encodeZigZag };
+

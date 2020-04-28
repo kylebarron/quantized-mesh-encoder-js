@@ -4,7 +4,7 @@
   "description": "Encode a mesh into the quantized mesh format",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,11 @@
   },
   "homepage": "https://github.com/kylebarron/quantized-mesh-encoder#readme",
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
     "@here/quantized-mesh-decoder": "^1.1.3",
     "@mapbox/martini": "^0.2.0",
+    "jest": "^25.4.0",
     "loaders.gl": "^0.3.5",
     "node-fetch": "^2.6.0"
   },
