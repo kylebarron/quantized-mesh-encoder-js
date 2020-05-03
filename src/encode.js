@@ -213,5 +213,57 @@ function encodeNonInterleavedVertexData(
   }
 }
 
+function getBufferLength(data) {
+  const { positions, indices, bbox } = data;
+  var [[minX, minY, _], [maxX, maxY, _]] = bbox;
+
+  let nBytes = 0;
+
+  // Header always 88 bytes
+  nBytes += 88;
+
+  // Vertex data
+  // vertexCount
+  nBytes += Uint32Array.BYTES_PER_ELEMENT;
+  // uint16 per position
+  var vertexCount = positions.length / 3;
+  nBytes += Uint16Array.BYTES_PER_ELEMENT * vertexCount * 3;
+
+  // Index data
+  var indexBytesPerElement =
+    vertexCount > 65536
+      ? Uint32Array.BYTES_PER_ELEMENT
+      : Uint16Array.BYTES_PER_ELEMENT;
+
+  // triangleCount
+  nBytes += Uint32Array.BYTES_PER_ELEMENT;
+  var triangleCount = indices.length / 3;
+  nBytes += indexBytesPerElement * triangleCount * 3;
+
+  // Edge vertices
+  var westVertexCount = 0;
+  var southVertexCount = 0;
+  var eastVertexCount = 0;
+  var northVertexCount = 0;
+
+  // Note: Assumes interleaved positions
+  for (var i = 0; i < positions.length; i += 3) {
+    var [x, y] = positions.subarray(i, i + 2);
+
+    if (x === minX) westVertexCount++;
+    if (x === maxX) eastVertexCount++;
+    if (y === minY) southVertexCount++;
+    if (y === maxY) northVertexCount++;
+  }
+
+  // count of each side
+  nBytes += Uint32Array.BYTES_PER_ELEMENT * 4;
+  nBytes += indexBytesPerElement * westVertexCount;
+  nBytes += indexBytesPerElement * southVertexCount;
+  nBytes += indexBytesPerElement * eastVertexCount;
+  nBytes += indexBytesPerElement * northVertexCount;
+
+  return nBytes;
+}
 
 export const TEST_EXPORTS = { encodeZigZag };
