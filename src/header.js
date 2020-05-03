@@ -1,5 +1,4 @@
-var SphericalMercator = require("@mapbox/sphericalmercator");
-var { Ellipsoid } = require("@math.gl/geospatial");
+var { Ellipsoid, BoundingSphere } = require("@math.gl/geospatial");
 
 export function computeHeader({ positions, bbox }) {
   // Find bounding sphere

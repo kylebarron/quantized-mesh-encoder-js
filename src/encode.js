@@ -1,3 +1,16 @@
+export function encode({ header, indices, positions }) {
+  var nBytes = getBufferLength({ indices, positions });
+  var buffer = new ArrayBuffer(nBytes);
+  var view = new DataView(buffer);
+
+  var offset = 0;
+  offset = encodeHeader(view, header, offset);
+  offset = encodeVertexData(view, positions, offset);
+  offset = encodeIndexData(view, positions, offset);
+
+  return view;
+}
+
 /**
  * Encode zig zag
  *
