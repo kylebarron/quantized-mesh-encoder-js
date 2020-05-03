@@ -6,7 +6,7 @@ export function encode({ header, indices, positions }) {
   var offset = 0;
   offset = encodeHeader(view, header, offset);
   offset = encodeVertexData(view, positions, offset);
-  offset = encodeIndexData(view, positions, offset);
+  offset = encodeIndexData(view, indices, offset);
 
   return view;
 }
@@ -17,7 +17,7 @@ export function encode({ header, indices, positions }) {
  * @param  {Integer} value Value to encode
  * @return {Integer}       Encoded value
  */
-function encodeZigZag(value) {
+function zigZagEncode(value) {
   if (value >= 0) {
     return value << 1;
   }
@@ -86,5 +86,132 @@ function encodeHeader(view, data, offset) {
   return offset + 88;
 }
 
-export const TEST_EXPORTS = { encodeZigZag };
+/**
+ * Encode vertex data
+ * Creates an int describing length of data, plus three arrays of that length
+ *
+ * @param  {[type]} view   [description]
+ * @param  {[type]} data   [description]
+ * @param  {[type]} offset [description]
+ * @return {[type]}        [description]
+ */
+function encodeVertexData(view, data, offset) {
+  var { bbox, positions } = data;
+  var interleaved = true;
+  offset = 0;
 
+  var vertexCount = positions.length / 3;
+  view.setUint32(offset, vertexCount, true);
+  offset += Uint32Array.BYTES_PER_ELEMENT;
+
+  if (interleaved) {
+    encodeInterleavedVertexData(view, data, offset, vertexCount);
+  } else {
+    encodeNonInterleavedVertexData(view, data, offset, vertexCount);
+  }
+}
+
+function encodeInterleavedVertexData(
+  view,
+  data,
+  offset,
+  positions,
+  vertexCount
+) {
+  positions;
+  var [[minX, minY, minZ], [maxX, maxY, maxZ]] = bbox;
+
+  var prevX = 0;
+  // Loop over x, y, z separately to make zig-zag encoding easier
+  for (var i = 0; i < positions.length; i += 3) {
+    // Scale to integer
+    var ratio = (positions[i] - minX) / maxX;
+    var x = Math.round(ratio * 32767);
+
+    var diff = x - prevX;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevX = x;
+  }
+
+  var prevY = 0;
+  for (var i = 1; i < positions.length; i += 3) {
+    // Scale to integer
+    var ratio = (positions[i] - minY) / maxY;
+    var y = Math.round(ratio * 32767);
+
+    var diff = y - prevY;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevY = y;
+  }
+
+  var prevZ = 0;
+  for (var i = 2; i < positions.length; i += 3) {
+    // Scale to integer
+    var ratio = (positions[i] - minZ) / maxZ;
+    var z = Math.round(ratio * 32767);
+
+    var diff = z - prevZ;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevZ = z;
+  }
+}
+
+function encodeNonInterleavedVertexData(
+  view,
+  data,
+  offset,
+  positions,
+  vertexCount
+) {
+  positions;
+  var [[minX, minY, minZ], [maxX, maxY, maxZ]] = bbox;
+
+  var prevX = 0;
+  // Loop over x, y, z separately to make zig-zag encoding easier
+  for (var i = 0; i < positions.length / 3; i++) {
+    // Scale to integer
+    var ratio = (positions[i] - minX) / maxX;
+    var x = Math.round(ratio * 32767);
+
+    var diff = x - prevX;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevX = x;
+  }
+
+  var prevY = 0;
+  for (var i = positions.length; i < (positions.length / 3) * 2; i++) {
+    // Scale to integer
+    var ratio = (positions[i] - minY) / maxY;
+    var y = Math.round(ratio * 32767);
+
+    var diff = y - prevY;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevY = y;
+  }
+
+  var prevZ = 0;
+  for (var i = positions.length * 2; i < positions.length; i++) {
+    // Scale to integer
+    var ratio = (positions[i] - minZ) / maxZ;
+    var z = Math.round(ratio * 32767);
+
+    var diff = z - prevZ;
+    var encoded = zigZagEncode(diff);
+    view.setUint16(offset, encoded, true);
+    offset += Uint16Array.BYTES_PER_ELEMENT;
+    prevZ = z;
+  }
+}
+
+
+export const TEST_EXPORTS = { encodeZigZag };
